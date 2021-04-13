@@ -22,7 +22,7 @@ func TestCanParse(t *testing.T) {
 func TestCanConvert(t *testing.T) {
 
 	br := BookingData{
-		Identifier: BookingIdentifier("ABC"),
+		Id: BookingIdentifier("ABC"),
 
 		Status:    BookingStatus(getAllBookingStatuses().CheckedIn),
 		StartDate: "2019-01-01",

@@ -8,7 +8,7 @@ import (
 
 // BookingData is the raw payload format as returned by the Resharmonics API
 type BookingData struct {
-	Identifier         BookingIdentifier     `json:"bookingIdentifier"`
+	Id                 BookingIdentifier     `json:"bookingIdentifier"`
 	Reference          BookingReference      `json:"bookingReference"`
 	Status             BookingStatus         `json:"status"`
 	StartDate          string                `json:"startDate"` // just date as 2005-01-01
@@ -64,7 +64,7 @@ func (bookingRaw *BookingData) toBooking() (*Booking, error) {
 
 	result := Booking{
 		Reference:  bookingRaw.Reference,
-		Identifier: bookingRaw.Identifier,
+		Identifier: bookingRaw.Id,
 		Status:     bookingRaw.Status,
 		Period: utils.BookingPeriod{
 			From: startDate,
