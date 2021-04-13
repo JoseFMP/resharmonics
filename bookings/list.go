@@ -60,7 +60,7 @@ func composeGetParams(period *utils.BookingPeriod, lastUpdated *time.Time, statu
 		marshalled, errMarshallingStatuses := json.Marshal(statusFilter)
 
 		if errMarshallingStatuses != nil {
-			return nil, fmt.Errorf("Error marshalling statuses", errMarshallingStatuses)
+			return nil, fmt.Errorf("Error marshalling statuses: %v", errMarshallingStatuses)
 		}
 		result[statusesParamName] = string(marshalled)
 	}
@@ -99,12 +99,12 @@ const dateToParamName = `dateTo`
 const lastUpdatedParamName = `latUpdated`
 const statusesParamName = `statuses`
 
-type BookingsPayloadResponse struct {
-	Results []*BookingRaw `json:"results"`
+type BookingSearchResponse struct {
+	Results []*BookingData `json:"results"`
 }
 
-func parseListResponse(payload []byte) ([]*BookingRaw, error) {
-	var response BookingsPayloadResponse
+func parseListResponse(payload []byte) ([]*BookingData, error) {
+	var response BookingSearchResponse
 	errUnmarshalling := json.Unmarshal(payload, &response)
 	if errUnmarshalling != nil {
 		return nil, errUnmarshalling

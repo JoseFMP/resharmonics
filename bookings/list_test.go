@@ -13,7 +13,7 @@ func TestCanParse(t *testing.T) {
 	assert.Nil(t, errParsing)
 	assert.NotNil(t, bookings)
 	assert.Len(t, bookings, 1)
-	assert.Equal(t, bookings[0].BookingReference, BookingIdentifier("20191129-00003/805"))
+	assert.Equal(t, bookings[0].Reference, BookingReference("20191129-00003/805"))
 	assert.Equal(t, bookings[0].Status, getAllBookingStatuses().CheckedOut)
 	assert.Equal(t, bookings[0].StartDate, "2019-11-29")
 	assert.Equal(t, bookings[0].EndDate, "2020-01-01")
@@ -21,11 +21,12 @@ func TestCanParse(t *testing.T) {
 
 func TestCanConvert(t *testing.T) {
 
-	br := BookingRaw{
-		BookingReference: BookingIdentifier("ABC"),
-		Status:           BookingStatus(getAllBookingStatuses().CheckedIn),
-		StartDate:        "2019-01-01",
-		EndDate:          "2019-01-03",
+	br := BookingData{
+		Identifier: BookingIdentifier("ABC"),
+
+		Status:    BookingStatus(getAllBookingStatuses().CheckedIn),
+		StartDate: "2019-01-01",
+		EndDate:   "2019-01-03",
 	}
 
 	asBooking, errConverting := br.toBooking()
@@ -33,12 +34,13 @@ func TestCanConvert(t *testing.T) {
 	assert.Nil(t, errConverting)
 	assert.NotNil(t, asBooking)
 
-	assert.Equal(t, BookingIdentifier("ABC"), asBooking.BookingReference)
-	assert.Equal(t, 2019, asBooking.StartDate.Year)
-	assert.Equal(t, 1, asBooking.StartDate.Day)
+	assert.Equal(t, BookingIdentifier("ABC"), asBooking.Identifier)
+	assert.NotNil(t, asBooking.Period)
+	assert.Equal(t, 2019, asBooking.Period.From.Year)
+	assert.Equal(t, 1, asBooking.Period.From.Day)
 
-	assert.Equal(t, 2019, asBooking.EndDate.Year)
-	assert.Equal(t, 2, asBooking.StartDate.Day)
+	assert.Equal(t, 2019, asBooking.Period.To.Year)
+	assert.Equal(t, 3, asBooking.Period.To.Day)
 
 }
 
