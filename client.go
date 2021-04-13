@@ -2,15 +2,16 @@ package resharmonics
 
 import (
 	"fmt"
+	"time"
 
 	"golang.org/x/sync/semaphore"
 )
 
 type client struct {
-	username        string
-	password        string
+	credentials     Credentials
 	tokenSemaphoere *semaphore.Weighted
-	token           string
+	token           *string
+	tokenFetchedOn  *time.Time
 }
 
 // Resharmonics client
@@ -21,16 +22,15 @@ type Resharmonics interface {
 }
 
 // Init gives you a Resharmonics client with functionality to do HTTP requests and authenticate
-func Init(username string, password string) (Resharmonics, error) {
+func Init(cred Credentials) (Resharmonics, error) {
 
-	errValidating := validate(username, password)
+	errValidating := validate(cred.Username, cred.Password)
 	if errValidating != nil {
 		return nil, errValidating
 	}
 	tokenSemaphore := semaphore.NewWeighted(1)
 	return &client{
-		username:        username,
-		password:        password,
+		credentials:     cred,
 		tokenSemaphoere: tokenSemaphore,
 	}, nil
 }
@@ -45,4 +45,9 @@ func validate(username string, password string) error {
 	}
 
 	return nil
+}
+
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

@@ -10,13 +10,22 @@ import (
 	"strings"
 )
 
+var baseUrl = GetBaseUrl()
+
 func (clt *client) DoGet(subPath string, params map[string]string) ([]byte, error) {
 
-	req, errCreatingReq := createGetReq(subPath, params, clt.token)
+	if clt.token == nil {
+		errAuthing := clt.auth()
+		if errAuthing != nil {
+			return nil, errAuthing
+		}
+	}
+
+	req, errCreatingReq := createGetReq(subPath, params, *clt.token)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
-	resPayload, errReadingBody := clt.DoReq(req)
+	resPayload, errReadingBody := clt.doReq(req)
 
 	if errReadingBody != nil {
 		return nil, errReadingBody
@@ -24,7 +33,7 @@ func (clt *client) DoGet(subPath string, params map[string]string) ([]byte, erro
 	return resPayload, nil
 }
 
-func (clt *client) DoReq(req *http.Request) ([]byte, error) {
+func (clt *client) doReq(req *http.Request) ([]byte, error) {
 
 	var res *http.Response
 	var errDoingReq error
@@ -57,11 +66,18 @@ func (clt *client) DoReq(req *http.Request) ([]byte, error) {
 
 func (clt *client) DoPost(subPath string, params map[string]string) ([]byte, error) {
 
+	if subPath != authEndpointSubpat && clt.token == nil {
+		errAuthing := clt.auth()
+		if errAuthing != nil {
+			return nil, errAuthing
+		}
+	}
+
 	req, errCreatingReq := createPostReq(subPath, params, clt.token)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
-	resPayload, errReadingBody := clt.DoReq(req)
+	resPayload, errReadingBody := clt.doReq(req)
 
 	if errReadingBody != nil {
 		return nil, errReadingBody
@@ -71,7 +87,7 @@ func (clt *client) DoPost(subPath string, params map[string]string) ([]byte, err
 
 func createGetReq(subPath string, params map[string]string, token string) (*http.Request, error) {
 	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
-	req, errCreatingReq := createReq(http.MethodGet, endpoint, nil, token)
+	req, errCreatingReq := createReq(http.MethodGet, endpoint, nil, &token)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
@@ -87,7 +103,7 @@ func createGetReq(subPath string, params map[string]string, token string) (*http
 	return req, nil
 }
 
-func createPostReq(subPath string, params map[string]string, token string) (*http.Request, error) {
+func createPostReq(subPath string, params map[string]string, token *string) (*http.Request, error) {
 	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
 
 	var body io.Reader
@@ -115,12 +131,14 @@ func createPostReq(subPath string, params map[string]string, token string) (*htt
 	return req, nil
 }
 
-func createReq(method string, endpoint string, body io.Reader, token string) (*http.Request, error) {
+func createReq(method string, endpoint string, body io.Reader, token *string) (*http.Request, error) {
 	req, errCreatingReq := http.NewRequest(method, endpoint, body)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
-	req.Header.Add("Authorization", token)
+	if token != nil {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", *token))
+	}
 	return req, nil
 }
 

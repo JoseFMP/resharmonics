@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 const authEndpointSubpat = `auth`
@@ -26,10 +27,11 @@ func (clt *client) auth() error {
 	defer clt.tokenSemaphoere.Release(1)
 
 	params := map[string]string{
-		"username": clt.username,
-		"password": clt.password,
+		"username": clt.credentials.Username,
+		"password": clt.credentials.Password,
 	}
 	res, errDoingPost := clt.DoPost(authEndpointSubpat, params)
+	now := time.Now()
 
 	if errDoingPost != nil {
 		return errDoingPost
@@ -45,8 +47,8 @@ func (clt *client) auth() error {
 		return fmt.Errorf("Token empty received")
 	}
 
-	clt.token = responseParsed.APIToken
-
+	clt.token = &responseParsed.APIToken
+	clt.tokenFetchedOn = &now
 	return nil
 }
 

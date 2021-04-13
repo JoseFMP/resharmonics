@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/JoseFMP/resharmonics"
+	"github.com/JoseFMP/resharmonics/utils"
 )
 
 type bookingsClient struct {
@@ -11,15 +12,13 @@ type bookingsClient struct {
 }
 
 type Client interface {
-	List(from time.Time, to time.Time, lastUpdated *time.Time, status *ListBookingFilter) ([]*Booking, error)
+	List(perdio utils.BookingPeriod, lastUpdated *time.Time, status []*BookingStatus) ([]*Booking, error)
 	Get(bookingIdentified BookingIdentifier) (*Booking, error)
 }
 
-type ListBookingFilter string
+func Init(creds resharmonics.Credentials) (Client, error) {
 
-func Init(username string, password string) (Client, error) {
-
-	rhClient, errInitializingClient := resharmonics.Init(username, password)
+	rhClient, errInitializingClient := resharmonics.Init(creds)
 	if errInitializingClient != nil {
 		return nil, errInitializingClient
 	}
