@@ -1,3 +1,6 @@
+
+[![Build status](https://dev.azure.com/noon-homa/Resharmonics/_apis/build/status/resharmonics-go-client)](https://dev.azure.com/noon-homa/Resharmonics/_build/latest?definitionId=42)
+
 # Motivation
 
 This is a Go client to consume [Resharmonics](https://www.resharmonics.com/) API.
