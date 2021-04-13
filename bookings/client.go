@@ -11,12 +11,12 @@ type bookingsClient struct {
 	resharmonics.Resharmonics
 }
 
-type Client interface {
-	List(perdio utils.BookingPeriod, lastUpdated *time.Time, status []*BookingStatus) ([]*Booking, error)
+type BookingsClient interface {
+	List(period utils.BookingPeriod, lastUpdated *time.Time, status []*BookingStatus) ([]*Booking, error)
 	Get(bookingIdentified BookingIdentifier) (*Booking, error)
 }
 
-func Init(creds resharmonics.Credentials) (Client, error) {
+func Init(creds resharmonics.Credentials) (BookingsClient, error) {
 
 	rhClient, errInitializingClient := resharmonics.Init(creds)
 	if errInitializingClient != nil {
