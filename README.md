@@ -1,6 +1,32 @@
 
 [![Build status](https://dev.azure.com/noon-homa/Resharmonics/_apis/build/status/resharmonics-go-client)](https://dev.azure.com/noon-homa/Resharmonics/_build/latest?definitionId=42)
 
+
+
+# Basic usage
+
+See the `test` folder for an example
+
+```
+import "github.com/JoseFMP/resharmonics"
+
+
+func main(){
+
+    creds := resharmonics.Credentials{ Username: "foo", Password: "baar" }
+
+    rhClient, errSettingUpClient := resharmonics.Init(creds)
+
+    if(errSettingUpClient != nil){
+        panic("Something went wrong setting up Resharmonics client")
+    }
+
+    rhClient.....
+    // go for gold!
+
+}
+```
+
 # Motivation
 
 This is a Go client to consume [Resharmonics](https://www.resharmonics.com/) API.
