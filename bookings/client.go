@@ -8,7 +8,7 @@ import (
 )
 
 type bookingsClient struct {
-	resharmonics.Resharmonics
+	resharmonics.Client
 }
 
 type BookingsClient interface {

@@ -14,15 +14,15 @@ type client struct {
 	tokenFetchedOn  *time.Time
 }
 
-// Resharmonics client
-type Resharmonics interface {
+// Client client
+type Client interface {
 	//Auth() error
 	DoPost(subPath string, params map[string]string) ([]byte, error)
 	DoGet(subPath string, params map[string]string) ([]byte, error)
 }
 
 // Init gives you a Resharmonics client with functionality to do HTTP requests and authenticate
-func Init(cred Credentials) (Resharmonics, error) {
+func Init(cred Credentials) (Client, error) {
 
 	errValidating := validate(cred.Username, cred.Password)
 	if errValidating != nil {
