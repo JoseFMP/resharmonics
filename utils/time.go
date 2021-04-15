@@ -6,13 +6,13 @@ import (
 )
 
 type BookingPeriod struct {
-	From *BookingDate
-	To   *BookingDate
+	From *BookingDate `json:"from"`
+	To   *BookingDate `json:"to"`
 }
 
 type BookingDate struct {
-	Year int
-	Day  int
+	Year int `json:"year"`
+	Day  int `json:"day"`
 }
 
 func FromDateString(dateAsString string) (*BookingDate, error) {
