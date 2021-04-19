@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -39,13 +40,16 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 	var errDoingReq error
 	for {
 		httpClient := http.Client{}
+		log.Printf("[doReq] Doing req: %s %s", req.Method, req.URL.Path)
 		res, errDoingReq = httpClient.Do(req)
 		if errDoingReq != nil {
 			return nil, errDoingReq
 		}
 		if res.StatusCode != http.StatusForbidden {
+			log.Printf("[doReq] Req result: %d -- %s %s", res.StatusCode, req.Method, req.URL.Path)
 			break
 		}
+		log.Println("[doReq] Needs to authenticate...")
 		errAuthenticating := clt.auth()
 		if errAuthenticating != nil {
 			return nil, errAuthenticating

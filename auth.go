@@ -4,18 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 )
 
 const authEndpointSubpat = `auth`
 
-var authContext = context.Background()
+var authContext = context.TODO()
 
 func (clt *client) auth() error {
 
+	log.Println("Waiting for semaphore not blocking")
 	semaphoreAcquired := clt.tokenSemaphoere.TryAcquire(1)
 	if !semaphoreAcquired {
 		for {
+			log.Println("Waiting for semaphore Blocking")
 			errAcquiring := clt.tokenSemaphoere.Acquire(authContext, 1)
 			if errAcquiring != nil {
 				return errAcquiring

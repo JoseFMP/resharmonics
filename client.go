@@ -29,10 +29,12 @@ func Init(cred Credentials) (Client, error) {
 		return nil, errValidating
 	}
 	tokenSemaphore := semaphore.NewWeighted(1)
-	return &client{
+	clientResult := &client{
 		credentials:     cred,
 		tokenSemaphoere: tokenSemaphore,
-	}, nil
+	}
+	go clientResult.auth()
+	return clientResult, nil
 }
 
 func validate(username string, password string) error {

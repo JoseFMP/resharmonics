@@ -19,6 +19,7 @@ func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Ti
 	if errPreparingGetParams != nil {
 		return nil, errPreparingGetParams
 	}
+
 	payloadRes, errDoingReq := clt.DoGet(bookingsSubpath, getParams)
 
 	if errDoingReq != nil {
