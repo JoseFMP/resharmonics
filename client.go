@@ -22,7 +22,7 @@ type Client interface {
 }
 
 // Init gives you a Resharmonics client with functionality to do HTTP requests and authenticate
-func Init(cred Credentials) (Client, error) {
+func Init(cred Credentials, preAuthorize bool) (Client, error) {
 
 	errValidating := validate(cred.Username, cred.Password)
 	if errValidating != nil {
@@ -33,7 +33,12 @@ func Init(cred Credentials) (Client, error) {
 		credentials:     cred,
 		tokenSemaphoere: tokenSemaphore,
 	}
-	go clientResult.auth()
+	if preAuthorize {
+		authRes := clientResult.auth()
+		if authRes != nil {
+			return nil, authRes
+		}
+	}
 	return clientResult, nil
 }
 

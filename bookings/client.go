@@ -16,9 +16,9 @@ type BookingsClient interface {
 	Get(bookingIdentified BookingIdentifier) (*Booking, error)
 }
 
-func Init(creds resharmonics.Credentials) (BookingsClient, error) {
+func Init(creds resharmonics.Credentials, preAuthorize bool) (BookingsClient, error) {
 
-	rhClient, errInitializingClient := resharmonics.Init(creds)
+	rhClient, errInitializingClient := resharmonics.Init(creds, preAuthorize)
 	if errInitializingClient != nil {
 		return nil, errInitializingClient
 	}

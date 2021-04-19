@@ -17,7 +17,7 @@ func main() {
 	creds := getCreds()
 	log.Println("Got creds")
 
-	bookingsClient, errInitializing := bookings.Init(*creds)
+	bookingsClient, errInitializing := bookings.Init(*creds, true)
 	if errInitializing != nil {
 		log.Panicf("Err initializing bookings client\n%v", errInitializing)
 	}
