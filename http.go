@@ -2,16 +2,15 @@ package resharmonics
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
+
+	"github.com/JoseFMP/resharmonics/urls"
+	"github.com/JoseFMP/resharmonics/utils"
 )
 
-var baseUrl = GetBaseUrl()
+var baseUrl = urls.GetBaseUrl()
 
 func (clt *client) DoGet(subPath string, params map[string]string) ([]byte, error) {
 
@@ -21,8 +20,8 @@ func (clt *client) DoGet(subPath string, params map[string]string) ([]byte, erro
 			return nil, errAuthing
 		}
 	}
-
-	req, errCreatingReq := createGetReq(subPath, params, *clt.token)
+	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
+	req, errCreatingReq := utils.CreateGetReq(endpoint, params, *clt.token)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
@@ -70,14 +69,14 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 
 func (clt *client) DoPost(subPath string, params map[string]string) ([]byte, error) {
 
-	if subPath != authEndpointSubpat && clt.token == nil {
+	if clt.token == nil {
 		errAuthing := clt.auth()
 		if errAuthing != nil {
 			return nil, errAuthing
 		}
 	}
-
-	req, errCreatingReq := createPostReq(subPath, params, clt.token)
+	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
+	req, errCreatingReq := utils.CreatePostReq(endpoint, params, clt.token)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
@@ -88,64 +87,3 @@ func (clt *client) DoPost(subPath string, params map[string]string) ([]byte, err
 	}
 	return resPayload, nil
 }
-
-func createGetReq(subPath string, params map[string]string, token string) (*http.Request, error) {
-	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
-	req, errCreatingReq := createReq(http.MethodGet, endpoint, nil, &token)
-	if errCreatingReq != nil {
-		return nil, errCreatingReq
-	}
-
-	if params != nil {
-		q := req.URL.Query()
-		for k, v := range params {
-			q.Add(k, v)
-		}
-		req.URL.RawQuery = q.Encode()
-	}
-
-	return req, nil
-}
-
-func createPostReq(subPath string, params map[string]string, token *string) (*http.Request, error) {
-	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
-
-	var body io.Reader
-	var urlEncodedParamsLength = 0
-	if params != nil {
-		paramsAsURL := url.Values{}
-		for k, v := range params {
-			paramsAsURL.Set(k, v)
-		}
-
-		encodedData := paramsAsURL.Encode()
-		urlEncodedParamsLength = len(encodedData)
-		body = strings.NewReader(encodedData)
-	}
-
-	req, errCreatingReq := createReq(http.MethodPost, endpoint, body, token)
-	if errCreatingReq != nil {
-		return nil, errCreatingReq
-	}
-	if params != nil {
-		req.Header.Add(contentTypeHTTPHeader, xWWWFormURLEncodedHTTPContentType)
-		req.Header.Add(contentLengthHTTPHeader, strconv.Itoa(urlEncodedParamsLength))
-	}
-
-	return req, nil
-}
-
-func createReq(method string, endpoint string, body io.Reader, token *string) (*http.Request, error) {
-	req, errCreatingReq := http.NewRequest(method, endpoint, body)
-	if errCreatingReq != nil {
-		return nil, errCreatingReq
-	}
-	if token != nil {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", *token))
-	}
-	return req, nil
-}
-
-const contentTypeHTTPHeader = `Content-Type`
-const contentLengthHTTPHeader = `Content-Length`
-const xWWWFormURLEncodedHTTPContentType = "application/x-www-form-urlencoded"
