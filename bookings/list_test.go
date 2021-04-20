@@ -22,7 +22,7 @@ func TestCanParse(t *testing.T) {
 func TestCanConvert(t *testing.T) {
 
 	br := BookingData{
-		Id: BookingIdentifier("ABC"),
+		Id: Identifier("ABC"),
 
 		Status:    BookingStatus(getAllBookingStatuses().CheckedIn),
 		StartDate: "2019-01-01",
@@ -34,7 +34,7 @@ func TestCanConvert(t *testing.T) {
 	assert.Nil(t, errConverting)
 	assert.NotNil(t, asBooking)
 
-	assert.Equal(t, BookingIdentifier("ABC"), asBooking.Identifier)
+	assert.Equal(t, Identifier("ABC"), asBooking.Identifier)
 	assert.NotNil(t, asBooking.Period)
 	assert.Equal(t, 2019, asBooking.Period.From.Year)
 	assert.Equal(t, 1, asBooking.Period.From.Day)

@@ -2,30 +2,20 @@ package bookings
 
 import (
 	"github.com/JoseFMP/resharmonics/contact"
+	"github.com/JoseFMP/resharmonics/invoices"
 	"github.com/JoseFMP/resharmonics/property"
 	"github.com/JoseFMP/resharmonics/utils"
 )
 
-// BookingData is the raw payload format as returned by the Resharmonics API
-type BookingData struct {
-	Id                 BookingIdentifier     `json:"bookingIdentifier"`
-	Reference          BookingReference      `json:"bookingReference"`
-	Status             BookingStatus         `json:"status"`
-	StartDate          string                `json:"startDate"` // just date as 2005-01-01
-	EndDate            string                `json:"endDate"`   // just date as 2005-01-01
-	Guests             []contact.Details     `json:"guests"`
-	Property           property.PropertyData `json:"property"`
-	NightlyAverageRate float64               `json:"NightlyAverageRate"`
-}
-
 // Booking is just a bit more parsed and less raw than BookingData. Otherwise just the sae
 type Booking struct {
-	Reference  BookingReference      `json:"bookingReference"`
-	Identifier BookingIdentifier     `json:"bookingIdentifier"`
-	Status     BookingStatus         `json:"status"`
-	Period     utils.BookingPeriod   `json:"period"`
-	Guests     []contact.Details     `json:"guests"`
-	Property   property.PropertyData `json:"property"`
+	Reference  BookingReference       `json:"bookingReference"`
+	Identifier Identifier             `json:"bookingIdentifier"`
+	Status     *BookingStatus         `json:"status"`
+	Period     utils.BookingPeriod    `json:"period"`
+	Guests     []contact.Details      `json:"guests"`
+	Property   *property.PropertyData `json:"property"`
+	Invoices   *[]*invoices.Invoice   `json:"invoices"`
 }
 
 type BookingStatus string
@@ -37,7 +27,7 @@ type allBookingStatuses struct {
 	Pending    BookingStatus
 }
 
-type BookingIdentifier string
+type Identifier string
 type BookingReference string
 
 func getAllBookingStatuses() *allBookingStatuses {
@@ -65,13 +55,13 @@ func (bookingRaw *BookingData) toBooking() (*Booking, error) {
 	result := Booking{
 		Reference:  bookingRaw.Reference,
 		Identifier: bookingRaw.Id,
-		Status:     bookingRaw.Status,
+		Status:     &bookingRaw.Status,
 		Period: utils.BookingPeriod{
 			From: startDate,
 			To:   endDate,
 		},
 		Guests:   bookingRaw.Guests,
-		Property: bookingRaw.Property,
+		Property: &bookingRaw.Property,
 	}
 	return &result, nil
 }

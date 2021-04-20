@@ -24,24 +24,34 @@ func main() {
 
 	bookingPeriod := utils.BookingPeriod{
 		From: &utils.BookingDate{
-			Year: 2019,
+			Year: 2018,
 			Day:  1,
 		},
 		To: &utils.BookingDate{
-			Year: 2019,
+			Year: 2021,
 			Day:  20,
 		},
 	}
 
 	log.Println("Getting list...")
-	bookings, errGettingList := bookingsClient.List(bookingPeriod, nil, nil)
+	bookingsList, errGettingList := bookingsClient.List(bookingPeriod, nil, nil)
 
 	if errGettingList != nil {
 		log.Panicf("Error getting the list... agg\n%v", errGettingList)
 	}
 
-	for _, b := range bookings {
-		log.Printf("Booking: %+v", b)
+	for _, b := range bookingsList {
+		//log.Printf("Booking: %+v", b)
+		singleBooking, errGettingSingle := bookingsClient.Get(b.Identifier)
+		if errGettingSingle != nil {
+			log.Panicf("Error getting single booking... agg\n%v", errGettingSingle)
+		}
+
+		marshalled, errMarhsalling := json.MarshalIndent(singleBooking, "", " ")
+		if errMarhsalling != nil {
+			panic("Err marshalling")
+		}
+		log.Printf("singleBooking: %s", string(marshalled))
 	}
 
 }
