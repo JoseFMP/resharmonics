@@ -1,22 +1,8 @@
 package bookings
 
 import (
-	"github.com/JoseFMP/resharmonics/contact"
-	"github.com/JoseFMP/resharmonics/invoices"
-	"github.com/JoseFMP/resharmonics/property"
 	"github.com/JoseFMP/resharmonics/utils"
 )
-
-// Booking is just a bit more parsed and less raw than BookingData. Otherwise just the sae
-type Booking struct {
-	Reference  BookingReference       `json:"bookingReference"`
-	Identifier Identifier             `json:"bookingIdentifier"`
-	Status     *BookingStatus         `json:"status"`
-	Period     utils.BookingPeriod    `json:"period"`
-	Guests     []contact.Details      `json:"guests"`
-	Property   *property.PropertyData `json:"property"`
-	Invoices   *[]*invoices.Invoice   `json:"invoices"`
-}
 
 type BookingStatus string
 
@@ -40,7 +26,7 @@ func getAllBookingStatuses() *allBookingStatuses {
 	}
 }
 
-func (bookingRaw *BookingData) toBooking() (*Booking, error) {
+func (bookingRaw *BookingData) toBooking() (*BookingL, error) {
 
 	startDate, errParsingStartDate := utils.FromDateString(bookingRaw.StartDate)
 	if errParsingStartDate != nil {
@@ -52,16 +38,16 @@ func (bookingRaw *BookingData) toBooking() (*Booking, error) {
 		return nil, errParsingEndDate
 	}
 
-	result := Booking{
+	result := BookingL{
 		Reference:  bookingRaw.Reference,
 		Identifier: bookingRaw.Id,
-		Status:     &bookingRaw.Status,
+		Status:     bookingRaw.Status,
 		Period: utils.BookingPeriod{
 			From: startDate,
 			To:   endDate,
 		},
 		Guests:   bookingRaw.Guests,
-		Property: &bookingRaw.Property,
+		Property: bookingRaw.Property,
 	}
 	return &result, nil
 }

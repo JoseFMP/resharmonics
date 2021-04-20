@@ -9,7 +9,7 @@ import (
 	"github.com/JoseFMP/resharmonics/utils"
 )
 
-func (clt *bookingsClient) Get(id Identifier) (*Booking, error) {
+func (clt *bookingsClient) Get(id Identifier) (*BookingS, error) {
 
 	validationRes := validateGetOneParams(id)
 	if validationRes != nil {
@@ -43,8 +43,8 @@ func validateGetOneParams(id Identifier) error {
 	return nil
 }
 
-func parseGetOneResponse(payload []byte) (*RawSingleBooking, error) {
-	var booking RawSingleBooking
+func parseGetOneResponse(payload []byte) (*RawBookingS, error) {
+	var booking RawBookingS
 	errUnmarshalling := json.Unmarshal(payload, &booking)
 	if errUnmarshalling != nil {
 		return nil, errUnmarshalling
@@ -53,7 +53,7 @@ func parseGetOneResponse(payload []byte) (*RawSingleBooking, error) {
 	return &booking, nil
 }
 
-func (bookingRaw *RawSingleBooking) toBooking() (*Booking, error) {
+func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
 
 	startDate, errParsingStartDate := utils.FromDateString(bookingRaw.Period.From)
 	if errParsingStartDate != nil {
@@ -65,28 +65,25 @@ func (bookingRaw *RawSingleBooking) toBooking() (*Booking, error) {
 		return nil, errParsingEndDate
 	}
 
-	var invoicesPointer *[]*invoices.Invoice
-	if bookingRaw.Invoices != nil {
-		invoices := make([]*invoices.Invoice, len(bookingRaw.Invoices))
-		for index, in := range bookingRaw.Invoices {
-			invoices[index] = in.ToInvoice()
-		}
-		invoicesPointer = &invoices
+	invoices := make([]*invoices.Invoice, len(bookingRaw.Invoices))
+	for index, in := range bookingRaw.Invoices {
+		invoices[index] = in.ToInvoice()
 	}
-	result := Booking{
+
+	result := BookingS{
 		Reference:  bookingRaw.Reference,
 		Identifier: bookingRaw.Id,
 		Period: utils.BookingPeriod{
 			From: startDate,
 			To:   endDate,
 		},
-		Guests:   []contact.Details{bookingRaw.Guest},
-		Invoices: invoicesPointer,
+		Guests:   bookingRaw.Guest,
+		Invoices: invoices,
 	}
 	return &result, nil
 }
 
-type RawSingleBooking struct {
+type RawBookingS struct {
 	Reference    BookingReference      `json:"bookingReference"`
 	Id           Identifier            `json:"bookingIdentifier"`
 	MaxOccupancy int                   `json:"maxOccupancy"`
@@ -100,4 +97,13 @@ type RawSingleBooking struct {
 type RawSinglePeriod struct {
 	From string `json:"dateFrom"`
 	To   string `json:"dateTo"`
+}
+
+// BookingS is just a bit more parsed and less raw than BookingData. Otherwise just the sae
+type BookingS struct {
+	Reference  BookingReference    `json:"bookingReference"`
+	Identifier Identifier          `json:"bookingIdentifier"`
+	Period     utils.BookingPeriod `json:"period"`
+	Guests     contact.Details     `json:"guests"`
+	Invoices   []*invoices.Invoice `json:"invoices"`
 }

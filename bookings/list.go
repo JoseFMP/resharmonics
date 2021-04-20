@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/JoseFMP/resharmonics/contact"
+	"github.com/JoseFMP/resharmonics/property"
 	"github.com/JoseFMP/resharmonics/utils"
 )
 
-func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Time, statusesFilter []*BookingStatus) ([]*Booking, error) {
+func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Time, statusesFilter []*BookingStatus) ([]*BookingL, error) {
 
 	validationRes := validateListParams(&period, lastUpdated, statusesFilter)
 	if validationRes != nil {
@@ -30,7 +32,7 @@ func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Ti
 	if errParsing != nil {
 		return nil, errParsing
 	}
-	res := make([]*Booking, 0)
+	res := make([]*BookingL, 0)
 
 	for _, rb := range rawBookings {
 		if rb == nil {
@@ -111,4 +113,14 @@ func parseListResponse(payload []byte) ([]*BookingData, error) {
 		return nil, errUnmarshalling
 	}
 	return response.Results, nil
+}
+
+// BookingL is just a bit more parsed and less raw than BookingData. Otherwise just the sae
+type BookingL struct {
+	Reference  BookingReference      `json:"bookingReference"`
+	Identifier Identifier            `json:"bookingIdentifier"`
+	Status     BookingStatus         `json:"status"`
+	Period     utils.BookingPeriod   `json:"period"`
+	Guests     []contact.Details     `json:"guests"`
+	Property   property.PropertyData `json:"property"`
 }

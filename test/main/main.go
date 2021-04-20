@@ -53,7 +53,6 @@ func main() {
 		}
 		log.Printf("singleBooking: %s", string(marshalled))
 	}
-
 }
 
 func getCreds() *resharmonics.Credentials {
