@@ -34,7 +34,7 @@ func TestCanConvert(t *testing.T) {
 	assert.Nil(t, errConverting)
 	assert.NotNil(t, asBooking)
 
-	assert.Equal(t, Identifier("ABC"), asBooking.Identifier)
+	assert.Equal(t, Identifier("ABC"), asBooking.Id)
 	assert.NotNil(t, asBooking.Period)
 	assert.Equal(t, 2019, asBooking.Period.From.Year)
 	assert.Equal(t, 1, asBooking.Period.From.Day)

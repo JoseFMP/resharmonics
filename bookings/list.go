@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/JoseFMP/resharmonics/contact"
+	"github.com/JoseFMP/resharmonics/invoices"
 	"github.com/JoseFMP/resharmonics/property"
 	"github.com/JoseFMP/resharmonics/utils"
 )
@@ -117,10 +118,54 @@ func parseListResponse(payload []byte) ([]*BookingData, error) {
 
 // BookingL is just a bit more parsed and less raw than BookingData. Otherwise just the sae
 type BookingL struct {
-	Reference  BookingReference      `json:"bookingReference"`
-	Identifier Identifier            `json:"bookingIdentifier"`
-	Status     BookingStatus         `json:"status"`
-	Period     utils.BookingPeriod   `json:"period"`
-	Guests     []contact.Details     `json:"guests"`
-	Property   property.PropertyData `json:"property"`
+	Id Identifier `json:"bookingIdentifier"`
+	Reference BookingReference      `json:"bookingReference"`
+	Status    BookingStatus         `json:"status"`
+	Period    utils.BookingPeriod   `json:"period"`
+	Guests    []contact.Details     `json:"guests"`
+	Property  property.PropertyData `json:"property"`
+	Extras    []Extra               `json:"extras"`
+}
+
+// BookingData is the raw payload format as returned by the Resharmonics API endpoint /bookings
+type BookingData struct {
+	Id                 Identifier            `json:"bookingIdentifier"`
+	Reference          BookingReference      `json:"bookingReference"`
+	Status             BookingStatus         `json:"status"`
+	StartDate          string                `json:"startDate"` // just date as 2005-01-01
+	EndDate            string                `json:"endDate"`   // just date as 2005-01-01
+	Guests             []contact.Details     `json:"guests"`
+	Property           property.PropertyData `json:"property"`
+	NightlyAverageRate float64               `json:"nightlyAverageRate"`
+	Invoices           []invoices.Invoice    `json:"invoices"`
+	Extras             []Extra               `json:"extras"`
+	BookingAccountName string                `json:"bookingAccountName"`
+	BillingAccountName string                `json:"billingAccountName"`
+}
+
+func (bookingRaw *BookingData) toBooking() (*BookingL, error) {
+
+	startDate, errParsingStartDate := utils.FromDateString(bookingRaw.StartDate)
+	if errParsingStartDate != nil {
+		return nil, errParsingStartDate
+	}
+
+	endDate, errParsingEndDate := utils.FromDateString(bookingRaw.EndDate)
+	if errParsingEndDate != nil {
+		return nil, errParsingEndDate
+	}
+
+	result := BookingL{
+		Reference: bookingRaw.Reference,
+		Id:        bookingRaw.Id,
+		Status:    bookingRaw.Status,
+		Period: utils.BookingPeriod{
+			From: startDate,
+			To:   endDate,
+		},
+		Guests:   bookingRaw.Guests,
+		Property: bookingRaw.Property,
+		Extras:   bookingRaw.Extras,
+	}
+	return &result, nil
 }

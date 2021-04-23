@@ -42,7 +42,7 @@ func main() {
 
 	for _, b := range bookingsList {
 		//log.Printf("Booking: %+v", b)
-		singleBooking, errGettingSingle := bookingsClient.Get(b.Identifier)
+		singleBooking, errGettingSingle := bookingsClient.Get(b.Id)
 		if errGettingSingle != nil {
 			log.Panicf("Error getting single booking... agg\n%v", errGettingSingle)
 		}
