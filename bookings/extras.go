@@ -6,7 +6,7 @@ type Extra struct {
 	WebDescription string       `json:"webDescription"`
 	Frequency      string       `json:"frequency"`
 	WebCategory    string       `json:"webCategory"`
-	Compulsory     string       `json:"compulsory"`
+	Compulsory     bool         `json:"compulsory"`
 	Pricing        ExtraPricing `json:"grossNetVat"`
 }
 
