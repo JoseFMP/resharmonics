@@ -67,7 +67,7 @@ func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
 
 	invoices := make([]*invoices.Invoice, len(bookingRaw.Invoices))
 	for index, in := range bookingRaw.Invoices {
-		invoices[index] = in.ToInvoice()
+		invoices[index] = &in
 	}
 
 	result := BookingS{
@@ -84,14 +84,14 @@ func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
 }
 
 type RawBookingS struct {
-	Reference    BookingReference      `json:"bookingReference"`
-	Id           Identifier            `json:"bookingIdentifier"`
-	MaxOccupancy int                   `json:"maxOccupancy"`
-	Guest        contact.Details       `json:"contactDetails"`
-	Period       RawSinglePeriod       `json:"datePeriod"`
-	Extras       []Extra               `json:"extras"`
-	FloorSpace   string                `json:"floorSpace"`
-	Invoices     []invoices.RawInvoice `json:"invoices"`
+	Reference    BookingReference   `json:"bookingReference"`
+	Id           Identifier         `json:"bookingIdentifier"`
+	MaxOccupancy int                `json:"maxOccupancy"`
+	Guest        contact.Details    `json:"contactDetails"`
+	Period       RawSinglePeriod    `json:"datePeriod"`
+	Extras       []Extra            `json:"extras"`
+	FloorSpace   string             `json:"floorSpace"`
+	Invoices     []invoices.Invoice `json:"invoices"`
 }
 
 type RawSinglePeriod struct {

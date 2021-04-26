@@ -12,7 +12,7 @@ type Extra struct {
 
 type ExtraID int
 type ExtraPricing struct {
-	Gross int `json:"gross"`
-	Net   int `json:"net"`
-	Vat   int `json:"vat"`
+	Gross float64 `json:"gross"`
+	Net   float64 `json:"net"`
+	Vat   float64 `json:"vat"`
 }

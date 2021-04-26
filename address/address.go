@@ -1,4 +1,4 @@
-package contact
+package address
 
 type Address struct {
 	Line1       string `json:"addressLine1"`
