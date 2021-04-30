@@ -77,8 +77,8 @@ func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
 			From: startDate,
 			To:   endDate,
 		},
-		Guest:    bookingRaw.Guest,
-		Invoices: invoices,
+		ContactDetails: bookingRaw.Guest,
+		Invoices:       invoices,
 	}
 	return &result, nil
 }
