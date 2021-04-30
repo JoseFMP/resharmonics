@@ -77,7 +77,7 @@ func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
 			From: startDate,
 			To:   endDate,
 		},
-		Guests:   bookingRaw.Guest,
+		Guest:    bookingRaw.Guest,
 		Invoices: invoices,
 	}
 	return &result, nil
@@ -104,6 +104,6 @@ type BookingS struct {
 	Reference  BookingReference    `json:"bookingReference"`
 	Identifier Identifier          `json:"bookingIdentifier"`
 	Period     utils.BookingPeriod `json:"period"`
-	Guests     contact.Details     `json:"guests"`
+	Guest      contact.Details     `json:"guest"`
 	Invoices   []*invoices.Invoice `json:"invoices"`
 }
