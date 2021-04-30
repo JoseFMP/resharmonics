@@ -34,7 +34,7 @@ func main() {
 	}
 
 	log.Println("Getting list...")
-	bookingsList, errGettingList := bookingsClient.List(bookingPeriod, nil, nil)
+	bookingsList, errGettingList := bookingsClient.List(bookingPeriod, nil, nil, nil)
 
 	if errGettingList != nil {
 		log.Panicf("Error getting the list... agg\n%v", errGettingList)

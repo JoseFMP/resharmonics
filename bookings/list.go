@@ -11,14 +11,14 @@ import (
 	"github.com/JoseFMP/resharmonics/utils"
 )
 
-func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Time, statusesFilter []*BookingStatus) ([]*BookingL, error) {
+func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Time, statusesFilter []*BookingStatus, pagination *utils.Pagination) ([]*BookingL, error) {
 
 	validationRes := validateListParams(&period, lastUpdated, statusesFilter)
 	if validationRes != nil {
 		return nil, validationRes
 	}
 
-	getParams, errPreparingGetParams := composeGetParams(&period, lastUpdated, statusesFilter)
+	getParams, errPreparingGetParams := composeGetParams(&period, lastUpdated, statusesFilter, pagination)
 	if errPreparingGetParams != nil {
 		return nil, errPreparingGetParams
 	}
@@ -49,7 +49,7 @@ func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Ti
 	return res, nil
 }
 
-func composeGetParams(period *utils.BookingPeriod, lastUpdated *time.Time, statusFilter []*BookingStatus) (map[string]interface{}, error) {
+func composeGetParams(period *utils.BookingPeriod, lastUpdated *time.Time, statusFilter []*BookingStatus, pagination *utils.Pagination) (map[string]interface{}, error) {
 
 	result := map[string]interface{}{
 		dateFromParamName: period.From.ToResharmonicsString(),
@@ -71,6 +71,13 @@ func composeGetParams(period *utils.BookingPeriod, lastUpdated *time.Time, statu
 		result[statusesParamName] = filterMapped
 	}
 
+	if pagination != nil {
+		result[utils.PageSizeGetParamName] = fmt.Sprintf("%d", pagination.PageSize)
+
+		if pagination.Page != nil {
+			result[utils.PageGetParamName] = fmt.Sprintf("%d", *pagination.Page)
+		}
+	}
 	return result, nil
 }
 

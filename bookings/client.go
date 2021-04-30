@@ -12,7 +12,7 @@ type bookingsClient struct {
 }
 
 type BookingsClient interface {
-	List(period utils.BookingPeriod, lastUpdated *time.Time, status []*BookingStatus) ([]*BookingL, error)
+	List(period utils.BookingPeriod, lastUpdated *time.Time, status []*BookingStatus, pagination *utils.Pagination) ([]*BookingL, error)
 	Get(bookingIdentified Identifier) (*BookingS, error)
 }
 
