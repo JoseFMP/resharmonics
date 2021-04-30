@@ -18,7 +18,7 @@ type client struct {
 type Client interface {
 	//Auth() error
 	DoPost(subPath string, params map[string]string) ([]byte, error)
-	DoGet(subPath string, params map[string]string) ([]byte, error)
+	DoGet(subPath string, params map[string]interface{}) ([]byte, error)
 }
 
 // Init gives you a Resharmonics client with functionality to do HTTP requests and authenticate

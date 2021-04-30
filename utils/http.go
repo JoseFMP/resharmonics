@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -36,7 +37,7 @@ func CreatePostReq(endPoint string, params map[string]string, token *string) (*h
 	return req, nil
 }
 
-func CreateGetReq(endPoint string, params map[string]string, token string) (*http.Request, error) {
+func CreateGetReq(endPoint string, params map[string]interface{}, token string) (*http.Request, error) {
 	req, errCreatingReq := createReq(http.MethodGet, endPoint, nil, &token)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
@@ -44,8 +45,22 @@ func CreateGetReq(endPoint string, params map[string]string, token string) (*htt
 
 	if params != nil {
 		q := req.URL.Query()
-		for k, v := range params {
-			q.Add(k, v)
+		for key, value := range params {
+
+			asString, isString := value.(string)
+			if isString {
+				q.Add(key, asString)
+			} else {
+				asStringSlice, isStringSlice := value.([]string)
+				if isStringSlice {
+					for _, valString := range asStringSlice {
+						q.Add(key, valString)
+					}
+				} else {
+					log.Println("Not string and not string slice!")
+					continue
+				}
+			}
 		}
 		req.URL.RawQuery = q.Encode()
 	}

@@ -49,9 +49,9 @@ func (clt *bookingsClient) List(period utils.BookingPeriod, lastUpdated *time.Ti
 	return res, nil
 }
 
-func composeGetParams(period *utils.BookingPeriod, lastUpdated *time.Time, statusFilter []*BookingStatus) (map[string]string, error) {
+func composeGetParams(period *utils.BookingPeriod, lastUpdated *time.Time, statusFilter []*BookingStatus) (map[string]interface{}, error) {
 
-	result := map[string]string{
+	result := map[string]interface{}{
 		dateFromParamName: period.From.ToResharmonicsString(),
 		dateToParamName:   period.To.ToResharmonicsString(),
 	}
@@ -61,12 +61,14 @@ func composeGetParams(period *utils.BookingPeriod, lastUpdated *time.Time, statu
 	}
 
 	if statusFilter != nil && len(statusFilter) > 0 {
-		marshalled, errMarshallingStatuses := json.Marshal(statusFilter)
 
-		if errMarshallingStatuses != nil {
-			return nil, fmt.Errorf("Error marshalling statuses: %v", errMarshallingStatuses)
+		filterMapped := make([]string, len(statusFilter))
+
+		for i, s := range statusFilter {
+			filterMapped[i] = string(*s)
 		}
-		result[statusesParamName] = string(marshalled)
+
+		result[statusesParamName] = filterMapped
 	}
 
 	return result, nil
@@ -118,7 +120,7 @@ func parseListResponse(payload []byte) ([]*BookingData, error) {
 
 // BookingL is just a bit more parsed and less raw than BookingData. Otherwise just the sae
 type BookingL struct {
-	Id Identifier `json:"bookingIdentifier"`
+	Id        Identifier            `json:"bookingIdentifier"`
 	Reference BookingReference      `json:"bookingReference"`
 	Status    BookingStatus         `json:"status"`
 	Period    utils.BookingPeriod   `json:"period"`

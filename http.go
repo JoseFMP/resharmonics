@@ -12,7 +12,7 @@ import (
 
 var baseUrl = urls.GetBaseUrl()
 
-func (clt *client) DoGet(subPath string, params map[string]string) ([]byte, error) {
+func (clt *client) DoGet(subPath string, params map[string]interface{}) ([]byte, error) {
 
 	if clt.token == nil {
 		errAuthing := clt.auth()
