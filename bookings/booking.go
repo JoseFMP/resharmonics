@@ -12,7 +12,7 @@ type allBookingStatuses struct {
 type Identifier string
 type BookingReference string
 
-func getAllBookingStatuses() *allBookingStatuses {
+func GetAllBookingStatuses() *allBookingStatuses {
 
 	return &allBookingStatuses{
 		Confirmed:  "CONFIRMED",

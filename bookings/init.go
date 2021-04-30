@@ -1,3 +1,3 @@
 package bookings
 
-var allStatusesMaterialized = getAllBookingStatuses()
+var allStatusesMaterialized = GetAllBookingStatuses()

@@ -14,7 +14,7 @@ func TestCanParse(t *testing.T) {
 	assert.NotNil(t, bookings)
 	assert.Len(t, bookings, 1)
 	assert.Equal(t, bookings[0].Reference, BookingReference("20191129-00003/805"))
-	assert.Equal(t, bookings[0].Status, getAllBookingStatuses().CheckedOut)
+	assert.Equal(t, bookings[0].Status, GetAllBookingStatuses().CheckedOut)
 	assert.Equal(t, bookings[0].StartDate, "2019-11-29")
 	assert.Equal(t, bookings[0].EndDate, "2020-01-01")
 }
@@ -24,7 +24,7 @@ func TestCanConvert(t *testing.T) {
 	br := BookingData{
 		Id: Identifier("ABC"),
 
-		Status:    BookingStatus(getAllBookingStatuses().CheckedIn),
+		Status:    BookingStatus(GetAllBookingStatuses().CheckedIn),
 		StartDate: "2019-01-01",
 		EndDate:   "2019-01-03",
 	}
