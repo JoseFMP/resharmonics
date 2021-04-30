@@ -101,9 +101,9 @@ type RawSinglePeriod struct {
 
 // BookingS is just a bit more parsed and less raw than BookingData. Otherwise just the sae
 type BookingS struct {
-	Reference  BookingReference    `json:"bookingReference"`
-	Identifier Identifier          `json:"bookingIdentifier"`
-	Period     utils.BookingPeriod `json:"period"`
-	Guest      contact.Details     `json:"guest"`
-	Invoices   []*invoices.Invoice `json:"invoices"`
+	Reference      BookingReference    `json:"bookingReference"`
+	Identifier     Identifier          `json:"bookingIdentifier"`
+	Period         utils.BookingPeriod `json:"period"`
+	ContactDetails contact.Details     `json:"contactDetails"`
+	Invoices       []*invoices.Invoice `json:"invoices"`
 }
