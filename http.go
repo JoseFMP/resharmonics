@@ -39,7 +39,7 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 	var errDoingReq error
 	for {
 		httpClient := http.Client{}
-		log.Printf("[doReq] Doing req: %s %s", req.Method, req.URL.Path)
+		log.Printf("[doReq] Doing req: %s %s %s", req.Method, req.URL, req.URL.Query().Encode())
 		res, errDoingReq = httpClient.Do(req)
 		if errDoingReq != nil {
 			return nil, errDoingReq
