@@ -1,5 +1,7 @@
 package bookings
 
+import "strings"
+
 type BookingStatus string
 
 type allBookingStatuses struct {
@@ -11,6 +13,15 @@ type allBookingStatuses struct {
 
 type Identifier string
 type BookingReference string
+
+func (original *BookingReference) AsCanonical() string {
+
+	val := string(*original)
+
+	splitted := strings.Split(val, "/")
+
+	return splitted[0]
+}
 
 func GetAllBookingStatuses() *allBookingStatuses {
 
