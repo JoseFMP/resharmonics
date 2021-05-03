@@ -14,6 +14,7 @@ type bookingsClient struct {
 type BookingsClient interface {
 	List(period utils.BookingPeriod, lastUpdated *time.Time, status []*BookingStatus, pagination *utils.Pagination) ([]*BookingL, error)
 	Get(bookingIdentified Identifier) (*BookingS, error)
+	GetStatus(id Identifier) (BookingStatus, error)
 }
 
 func Init(creds resharmonics.Credentials, preAuthorize bool) (BookingsClient, error) {

@@ -2,15 +2,6 @@ package bookings
 
 import "strings"
 
-type BookingStatus string
-
-type allBookingStatuses struct {
-	Confirmed  BookingStatus
-	CheckedIn  BookingStatus
-	CheckedOut BookingStatus
-	Pending    BookingStatus
-}
-
 type Identifier string
 type BookingReference string
 
