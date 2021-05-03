@@ -81,7 +81,7 @@ func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
 		ContactDetails: bookingRaw.Guest,
 		Invoices:       invoices,
 
-		Propery: property.PropertyData{
+		Property: property.PropertyData{
 			BuildingName: bookingRaw.BuildingName,
 			MaxOccupancy: bookingRaw.MaxOccupancy,
 		},
@@ -123,5 +123,5 @@ type BookingS struct {
 	Period         utils.BookingPeriod   `json:"period"`
 	ContactDetails contact.Details       `json:"contactDetails"`
 	Invoices       []*invoices.Invoice   `json:"invoices"`
-	Propery        property.PropertyData `json:"property"`
+	Property       property.PropertyData `json:"property"`
 }
