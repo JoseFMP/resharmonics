@@ -6,6 +6,7 @@ import (
 
 	"github.com/JoseFMP/resharmonics/contact"
 	"github.com/JoseFMP/resharmonics/invoices"
+	"github.com/JoseFMP/resharmonics/property"
 	"github.com/JoseFMP/resharmonics/utils"
 )
 
@@ -79,19 +80,35 @@ func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
 		},
 		ContactDetails: bookingRaw.Guest,
 		Invoices:       invoices,
+
+		Propery: property.PropertyData{
+			BuildingName: bookingRaw.BuildingName,
+			MaxOccupancy: bookingRaw.MaxOccupancy,
+		},
+	}
+
+	if bookingRaw.UnitName != nil {
+		//result.Propery.Na
 	}
 	return &result, nil
 }
 
 type RawBookingS struct {
-	Reference    BookingReference   `json:"bookingReference"`
-	Id           Identifier         `json:"bookingIdentifier"`
-	MaxOccupancy int                `json:"maxOccupancy"`
-	Guest        contact.Details    `json:"contactDetails"`
-	Period       RawSinglePeriod    `json:"datePeriod"`
-	Extras       []Extra            `json:"extras"`
-	FloorSpace   string             `json:"floorSpace"`
-	Invoices     []invoices.Invoice `json:"invoices"`
+	Reference       BookingReference   `json:"bookingReference"`
+	Id              Identifier         `json:"bookingIdentifier"`
+	MaxOccupancy    int                `json:"maxOccupancy"`
+	Guest           contact.Details    `json:"contactDetails"`
+	Period          RawSinglePeriod    `json:"datePeriod"`
+	Extras          []Extra            `json:"extras"`
+	FloorSpace      *string            `json:"floorSpace"`
+	UnitName        *string            `json:"unitName"`
+	UnitType        string             `json:"unitType"`
+	Description     string             `json:"description"`
+	Invoices        []invoices.Invoice `json:"invoices"`
+	BuildingAddress property.Address   `json:"buildingAddress"`
+	BuildingName    string             `json:"buildingName"`
+	Features        []property.Feature `json:"features"`
+	Currency        string             `json:"currencySymbol"`
 }
 
 type RawSinglePeriod struct {
@@ -101,9 +118,10 @@ type RawSinglePeriod struct {
 
 // BookingS is just a bit more parsed and less raw than BookingData. Otherwise just the sae
 type BookingS struct {
-	Reference      BookingReference    `json:"bookingReference"`
-	Identifier     Identifier          `json:"bookingIdentifier"`
-	Period         utils.BookingPeriod `json:"period"`
-	ContactDetails contact.Details     `json:"contactDetails"`
-	Invoices       []*invoices.Invoice `json:"invoices"`
+	Reference      BookingReference      `json:"bookingReference"`
+	Identifier     Identifier            `json:"bookingIdentifier"`
+	Period         utils.BookingPeriod   `json:"period"`
+	ContactDetails contact.Details       `json:"contactDetails"`
+	Invoices       []*invoices.Invoice   `json:"invoices"`
+	Propery        property.PropertyData `json:"property"`
 }

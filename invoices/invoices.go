@@ -1,6 +1,6 @@
 package invoices
 
-import "github.com/JoseFMP/resharmonics/address"
+import "github.com/JoseFMP/resharmonics/property"
 
 type Invoice struct {
 	// Number is unique
@@ -20,7 +20,7 @@ type Invoice struct {
 type InvoiceNumber string
 
 type InvoiceDetails struct {
-	CustomerName string           `json:"customerName"`
-	CompanyName  string           `json:"companyName"`
-	Address      *address.Address `json:"address"`
+	CustomerName string            `json:"customerName"`
+	CompanyName  string            `json:"companyName"`
+	Address      *property.Address `json:"address"`
 }
