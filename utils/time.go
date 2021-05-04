@@ -23,7 +23,7 @@ func FromDateString(dateAsString string) (*BookingDate, error) {
 	}
 	return &BookingDate{
 		Year: date.Year(),
-		Day:  date.Day(),
+		Day:  date.YearDay(),
 	}, nil
 }
 
