@@ -11,17 +11,17 @@ type PropertyData struct {
 
 	UnitTypeId int `json:"unitTypeId"`
 
-	Unavailable                 bool   `json:"unavailable"`
-	PropertyNameName            string `json:"propertyName"`
-	PropertyTypeDescription     string `json:"propertyTpeDescription"`
-	PropertyTypeLongDescription string `json:"propertyTypeLongDescription"`
-	ShortDescription            string `json:"shortDescription"`
-	MaxOccupancy                int    `json:"maxOccupancy"`
-	FloorSpace                  string `json:"floorSpace"`
-	Location                    string `json:"location"`
-
-	Contracts    []contracts.Contract `json:"unitContracts"`
-	CustomFields []CustomField        `json:"customFields"`
+	Unavailable                 bool                 `json:"unavailable"`
+	PropertyNameName            string               `json:"propertyName"`
+	PropertyTypeDescription     string               `json:"propertyTpeDescription"`
+	PropertyTypeLongDescription string               `json:"propertyTypeLongDescription"`
+	ShortDescription            string               `json:"shortDescription"`
+	MaxOccupancy                int                  `json:"maxOccupancy"`
+	FloorSpace                  string               `json:"floorSpace"`
+	Location                    string               `json:"location"`
+	Address                     *Address             `json:"address"`
+	Contracts                   []contracts.Contract `json:"unitContracts"`
+	CustomFields                []CustomField        `json:"customFields"`
 }
 
 type PropertyID string

@@ -54,42 +54,47 @@ func parseGetOneResponse(payload []byte) (*RawBookingS, error) {
 	return &booking, nil
 }
 
-func (bookingRaw *RawBookingS) toBooking() (*BookingS, error) {
+func (raw *RawBookingS) toBooking() (*BookingS, error) {
 
-	startDate, errParsingStartDate := utils.FromDateString(bookingRaw.Period.From)
+	startDate, errParsingStartDate := utils.FromDateString(raw.Period.From)
 	if errParsingStartDate != nil {
 		return nil, errParsingStartDate
 	}
 
-	endDate, errParsingEndDate := utils.FromDateString(bookingRaw.Period.To)
+	endDate, errParsingEndDate := utils.FromDateString(raw.Period.To)
 	if errParsingEndDate != nil {
 		return nil, errParsingEndDate
 	}
 
-	invoices := make([]*invoices.Invoice, len(bookingRaw.Invoices))
-	for index, in := range bookingRaw.Invoices {
+	invoices := make([]*invoices.Invoice, len(raw.Invoices))
+	for index, in := range raw.Invoices {
 		invoices[index] = &in
 	}
 
 	result := BookingS{
-		Reference:  bookingRaw.Reference,
-		Identifier: bookingRaw.Id,
+		Reference:  raw.Reference,
+		Identifier: raw.Id,
 		Period: utils.BookingPeriod{
 			From: startDate,
 			To:   endDate,
 		},
-		ContactDetails: bookingRaw.Guest,
+		ContactDetails: raw.Guest,
 		Invoices:       invoices,
 
 		Property: property.PropertyData{
-			BuildingName: bookingRaw.BuildingName,
-			MaxOccupancy: bookingRaw.MaxOccupancy,
+			BuildingName: raw.BuildingName,
+			MaxOccupancy: raw.MaxOccupancy,
+			Address:      &raw.BuildingAddress,
 		},
 	}
 
-	if bookingRaw.UnitName != nil {
-		//result.Propery.Na
+	if raw.UnitName != nil {
+		result.Property.Name = *raw.UnitName
 	}
+	if raw.FloorSpace != nil {
+		result.Property.FloorSpace = *raw.FloorSpace
+	}
+
 	return &result, nil
 }
 
