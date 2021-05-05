@@ -42,6 +42,7 @@ func hasToDoAuth(semaphore *semaphore.Weighted) (bool, error) {
 	log.Println("Waiting for semaphore not blocking")
 	semaphoreAcquired := semaphore.TryAcquire(1)
 	if semaphoreAcquired {
+		log.Println("Semaphore acquired")
 		//defer semaphore.Release(1)
 		return true, nil
 	} else {
@@ -51,7 +52,7 @@ func hasToDoAuth(semaphore *semaphore.Weighted) (bool, error) {
 			log.Printf("Err acquiring token: %v", errAcquiring)
 			return false, errAcquiring
 		}
-		log.Println("Got token, means we're good to go", errAcquiring)
+		log.Println("Got lock.")
 		defer semaphore.Release(1)
 		return false, nil
 	}
