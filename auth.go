@@ -2,29 +2,21 @@ package resharmonics
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/JoseFMP/resharmonics/auth"
-	"golang.org/x/sync/semaphore"
 )
 
 var authContext = context.TODO()
 
-func (clt *client) auth() error {
+func (clt *client) auth(tokenBeforeReq *string) error {
 
-	for {
-		hasToDo, errAcquiring := hasToDoAuth(clt.tokenSemaphoere)
-		if errAcquiring != nil {
-			continue
-		}
-		if !hasToDo {
-			return nil
-		} else {
-			break
-		}
+	clt.tokenLock.Lock()
+	defer clt.tokenLock.Unlock()
+	transitionLooksValid := tokenTransitionLooksValid(tokenBeforeReq, clt.token)
+	if transitionLooksValid {
+		return nil
 	}
-	defer clt.tokenSemaphoere.Release(1)
 
 	token, errFetchingToken := auth.FetchToken(clt.credentials.Username, clt.credentials.Password)
 	now := time.Now()
@@ -38,22 +30,19 @@ func (clt *client) auth() error {
 	return nil
 }
 
-func hasToDoAuth(semaphore *semaphore.Weighted) (bool, error) {
-	log.Println("Waiting for semaphore not blocking")
-	semaphoreAcquired := semaphore.TryAcquire(1)
-	if semaphoreAcquired {
-		log.Println("Semaphore acquired")
-		//defer semaphore.Release(1)
-		return true, nil
-	} else {
-		log.Println("Waiting for semaphore Blocking")
-		errAcquiring := semaphore.Acquire(authContext, 1)
-		if errAcquiring != nil {
-			log.Printf("Err acquiring token: %v", errAcquiring)
-			return false, errAcquiring
-		}
-		log.Println("Got lock.")
-		defer semaphore.Release(1)
-		return false, nil
+func tokenTransitionLooksValid(tokenBeforeReq *string, tokenAfterReq *string) bool {
+
+	if tokenBeforeReq == nil && tokenAfterReq == nil {
+		return false
 	}
+
+	if tokenBeforeReq == nil && tokenAfterReq != nil {
+		return true
+	}
+
+	if tokenBeforeReq != nil && tokenAfterReq == nil {
+		return false
+	}
+
+	return *tokenBeforeReq != *tokenAfterReq
 }

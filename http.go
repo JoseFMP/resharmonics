@@ -15,7 +15,7 @@ var baseUrl = urls.GetBaseUrl()
 func (clt *client) DoGet(subPath string, params map[string]interface{}) ([]byte, error) {
 
 	if clt.token == nil {
-		errAuthing := clt.auth()
+		errAuthing := clt.auth(nil)
 		if errAuthing != nil {
 			return nil, errAuthing
 		}
@@ -40,6 +40,8 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 	for {
 		httpClient := http.Client{}
 		log.Printf("[doReq] Doing req: %s %s %s", req.Method, req.URL, req.URL.Query().Encode())
+
+		tokenBeforeReq := *clt.token
 		res, errDoingReq = httpClient.Do(req)
 		if errDoingReq != nil {
 			return nil, errDoingReq
@@ -49,7 +51,7 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 			break
 		}
 		log.Println("[doReq] Needs to authenticate...")
-		errAuthenticating := clt.auth()
+		errAuthenticating := clt.auth(&tokenBeforeReq)
 		if errAuthenticating != nil {
 			return nil, errAuthenticating
 		}
@@ -70,7 +72,7 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 func (clt *client) DoPost(subPath string, params map[string]string) ([]byte, error) {
 
 	if clt.token == nil {
-		errAuthing := clt.auth()
+		errAuthing := clt.auth(nil)
 		if errAuthing != nil {
 			return nil, errAuthing
 		}

@@ -2,16 +2,15 @@ package resharmonics
 
 import (
 	"fmt"
+	"sync"
 	"time"
-
-	"golang.org/x/sync/semaphore"
 )
 
 type client struct {
-	credentials     Credentials
-	tokenSemaphoere *semaphore.Weighted
-	token           *string
-	tokenFetchedOn  *time.Time
+	credentials    Credentials
+	tokenLock      *sync.Mutex
+	token          *string
+	tokenFetchedOn *time.Time
 }
 
 // Client client
@@ -28,13 +27,13 @@ func Init(cred Credentials, preAuthorize bool) (Client, error) {
 	if errValidating != nil {
 		return nil, errValidating
 	}
-	tokenSemaphore := semaphore.NewWeighted(1)
+
 	clientResult := &client{
-		credentials:     cred,
-		tokenSemaphoere: tokenSemaphore,
+		credentials: cred,
+		tokenLock:   &sync.Mutex{},
 	}
 	if preAuthorize {
-		authRes := clientResult.auth()
+		authRes := clientResult.auth(nil)
 		if authRes != nil {
 			return nil, authRes
 		}
