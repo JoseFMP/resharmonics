@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"strings"
 
@@ -49,13 +48,11 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 			return nil, errDoingReq
 		}
 
-		hasToRedoAuth := rand.Float64() > 0.5
-
-		if !hasToRedoAuth && res.StatusCode == http.StatusOK {
+		if res.StatusCode == http.StatusOK {
 			break
 		}
 
-		if !hasToRedoAuth && res.StatusCode != http.StatusForbidden {
+		if res.StatusCode != http.StatusForbidden {
 			return nil, fmt.Errorf("[doReq] Req result: %d -- %s %s", res.StatusCode, req.Method, req.URL.Path)
 		}
 
@@ -70,10 +67,6 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 			injectToken(clt.token, req.Header)
 			log.Println("Authentication returned no error, should have new token")
 		}
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%d - %s", res.StatusCode, res.Status)
 	}
 
 	respPayload, errReadingBody := ioutil.ReadAll(res.Body)
