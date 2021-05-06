@@ -1,4 +1,4 @@
-package resharmonics
+package auth
 
 import (
 	"testing"
@@ -7,8 +7,8 @@ import (
 )
 
 type tokenTransitionTestCase struct {
-	tokenBefore *string
-	tokenAfter  *string
+	tokenBefore string
+	tokenAfter  string
 	expected    bool
 }
 
@@ -21,29 +21,29 @@ func TestTokenTransition(t *testing.T) {
 
 	testCases := []tokenTransitionTestCase{
 		{
-			nil,
-			nil,
+			"",
+			"",
 			false,
 		},
 		{
-			nil,
-			&tokenMock,
+			"",
+			tokenMock,
 			true,
 		},
 		{
 
-			&tokenMock,
-			nil,
+			tokenMock,
+			"",
 			false,
 		},
 		{
-			&tokenMock,
-			&tokenMock,
+			tokenMock,
+			tokenMock,
 			false,
 		},
 		{
-			&tokenMock2,
-			&tokenMock,
+			tokenMock2,
+			tokenMock,
 			true,
 		},
 	}
@@ -52,7 +52,7 @@ func TestTokenTransition(t *testing.T) {
 
 	for _, tc := range testCases {
 
-		actual := tokenTransitionLooksValid(tc.tokenBefore, tc.tokenAfter)
+		actual := IsTokenUpdatedToValid(tc.tokenBefore, tc.tokenAfter)
 
 		// verify
 		require.Equal(t, tc.expected, actual)

@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func CreatePostReq(endPoint string, params map[string]string, token *string) (*http.Request, error) {
+func CreatePostReq(endPoint string, params map[string]string, token string) (*http.Request, error) {
 
 	var body io.Reader
 	var urlEncodedParamsLength = 0
@@ -38,7 +38,7 @@ func CreatePostReq(endPoint string, params map[string]string, token *string) (*h
 }
 
 func CreateGetReq(endPoint string, params map[string]interface{}, token string) (*http.Request, error) {
-	req, errCreatingReq := createReq(http.MethodGet, endPoint, nil, &token)
+	req, errCreatingReq := createReq(http.MethodGet, endPoint, nil, token)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
@@ -68,13 +68,13 @@ func CreateGetReq(endPoint string, params map[string]interface{}, token string) 
 	return req, nil
 }
 
-func createReq(method string, endpoint string, body io.Reader, token *string) (*http.Request, error) {
+func createReq(method string, endpoint string, body io.Reader, token string) (*http.Request, error) {
 	req, errCreatingReq := http.NewRequest(method, endpoint, body)
 	if errCreatingReq != nil {
 		return nil, errCreatingReq
 	}
-	if token != nil {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", *token))
+	if token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
 	return req, nil
 }

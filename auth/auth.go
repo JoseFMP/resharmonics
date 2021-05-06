@@ -20,7 +20,7 @@ func FetchToken(userName string, password string) (string, error) {
 	}
 
 	endPoint := fmt.Sprintf("%s/%s", urls.GetBaseUrl(), authEndpointSubpat)
-	req, errCreatingReq := utils.CreatePostReq(endPoint, params, nil)
+	req, errCreatingReq := utils.CreatePostReq(endPoint, params, "")
 
 	if errCreatingReq != nil {
 		return "", errCreatingReq

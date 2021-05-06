@@ -41,17 +41,17 @@ func main() {
 	}
 
 	for _, b := range bookingsList {
-		//log.Printf("Booking: %+v", b)
-		singleBooking, errGettingSingle := bookingsClient.Get(b.Id)
+		sb, errGettingSingle := bookingsClient.Get(b.Id)
 		if errGettingSingle != nil {
 			log.Panicf("Error getting single booking... agg\n%v", errGettingSingle)
 		}
+		log.Printf("Did %s", string(sb.Identifier))
 
-		marshalled, errMarhsalling := json.MarshalIndent(singleBooking, "", " ")
-		if errMarhsalling != nil {
-			panic("Err marshalling")
-		}
-		log.Printf("singleBooking: %s", string(marshalled))
+		//marshalled, errMarhsalling := json.MarshalIndent(singleBooking, "", " ")
+		//if errMarhsalling != nil {
+		//	panic("Err marshalling")
+		//}
+		//log.Printf("singleBooking: %s", string(marshalled))
 	}
 }
 

@@ -9,7 +9,7 @@ import (
 type client struct {
 	credentials    Credentials
 	tokenLock      *sync.Mutex
-	token          *string
+	token          string
 	tokenFetchedOn *time.Time
 }
 
@@ -33,7 +33,7 @@ func Init(cred Credentials, preAuthorize bool) (Client, error) {
 		tokenLock:   &sync.Mutex{},
 	}
 	if preAuthorize {
-		authRes := clientResult.auth(nil)
+		authRes := clientResult.auth("")
 		if authRes != nil {
 			return nil, authRes
 		}
