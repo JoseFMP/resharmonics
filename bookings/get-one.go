@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/JoseFMP/resharmonics/contact"
-	"github.com/JoseFMP/resharmonics/invoices"
+	"github.com/JoseFMP/resharmonics/financials"
 	"github.com/JoseFMP/resharmonics/property"
 	"github.com/JoseFMP/resharmonics/utils"
 )
@@ -66,7 +66,7 @@ func (raw *RawBookingS) toBooking() (*BookingS, error) {
 		return nil, errParsingEndDate
 	}
 
-	invoices := make([]*invoices.Invoice, len(raw.Invoices))
+	invoices := make([]*financials.Invoice, len(raw.Invoices))
 	for index, in := range raw.Invoices {
 		invoices[index] = &in
 	}
@@ -99,21 +99,21 @@ func (raw *RawBookingS) toBooking() (*BookingS, error) {
 }
 
 type RawBookingS struct {
-	Reference       BookingReference   `json:"bookingReference"`
-	Id              Identifier         `json:"bookingIdentifier"`
-	MaxOccupancy    int                `json:"maxOccupancy"`
-	Guest           contact.Details    `json:"contactDetails"`
-	Period          RawSinglePeriod    `json:"datePeriod"`
-	Extras          []Extra            `json:"extras"`
-	FloorSpace      *string            `json:"floorSpace"`
-	UnitName        *string            `json:"unitName"`
-	UnitType        string             `json:"unitType"`
-	Description     string             `json:"description"`
-	Invoices        []invoices.Invoice `json:"invoices"`
-	BuildingAddress property.Address   `json:"buildingAddress"`
-	BuildingName    string             `json:"buildingName"`
-	Features        []property.Feature `json:"features"`
-	Currency        string             `json:"currencySymbol"`
+	Reference       BookingReference     `json:"bookingReference"`
+	Id              Identifier           `json:"bookingIdentifier"`
+	MaxOccupancy    int                  `json:"maxOccupancy"`
+	Guest           contact.Details      `json:"contactDetails"`
+	Period          RawSinglePeriod      `json:"datePeriod"`
+	Extras          []Extra              `json:"extras"`
+	FloorSpace      *string              `json:"floorSpace"`
+	UnitName        *string              `json:"unitName"`
+	UnitType        string               `json:"unitType"`
+	Description     string               `json:"description"`
+	Invoices        []financials.Invoice `json:"invoices"`
+	BuildingAddress property.Address     `json:"buildingAddress"`
+	BuildingName    string               `json:"buildingName"`
+	Features        []property.Feature   `json:"features"`
+	Currency        string               `json:"currencySymbol"`
 }
 
 type RawSinglePeriod struct {
@@ -127,6 +127,6 @@ type BookingS struct {
 	Identifier     Identifier            `json:"bookingIdentifier"`
 	Period         utils.BookingPeriod   `json:"period"`
 	ContactDetails contact.Details       `json:"contactDetails"`
-	Invoices       []*invoices.Invoice   `json:"invoices"`
+	Invoices       []*financials.Invoice `json:"invoices"`
 	Property       property.PropertyData `json:"property"`
 }

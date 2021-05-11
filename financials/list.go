@@ -1,14 +1,15 @@
-package invoices
+package financials
 
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/JoseFMP/resharmonics"
 	"github.com/JoseFMP/resharmonics/utils"
 )
 
-func (clt *invoicesClient) List(period utils.BookingPeriod, org resharmonics.OrganizationID, pagination *utils.Pagination) ([]*Invoice, error) {
+func (clt *financialsClient) ListInvoices(period utils.BookingPeriod, org resharmonics.OrganizationID, pagination *utils.Pagination) ([]*Invoice, error) {
 	validationRes := validateListParams(period, org, pagination)
 	if validationRes != nil {
 		return nil, validationRes
@@ -30,6 +31,11 @@ func (clt *invoicesClient) List(period utils.BookingPeriod, org resharmonics.Org
 
 	for _, inv := range invoices {
 		if inv == nil {
+			continue
+		}
+		errValidating := validateInvoice(inv)
+		if errValidating != nil {
+			log.Printf("Skipping invoice: %v", errValidating)
 			continue
 		}
 
@@ -66,7 +72,7 @@ func composeGetParams(period utils.BookingPeriod, org resharmonics.OrganizationI
 
 	result[dateFromParamName] = dateFrom
 	result[dateToParamName] = dateTo
-	result[organsationIDParamName] = int(org)
+	result[organsationIDParamName] = fmt.Sprintf("%d", int(org))
 
 	if pagination != nil {
 		result[utils.PageSizeGetParamName] = fmt.Sprintf("%d", pagination.PageSize)

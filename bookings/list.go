@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/JoseFMP/resharmonics/contact"
-	"github.com/JoseFMP/resharmonics/invoices"
+	"github.com/JoseFMP/resharmonics/financials"
 	"github.com/JoseFMP/resharmonics/property"
 	"github.com/JoseFMP/resharmonics/utils"
 )
@@ -146,7 +146,7 @@ type BookingData struct {
 	Guests             []contact.Details     `json:"guests"`
 	Property           property.PropertyData `json:"property"`
 	NightlyAverageRate float64               `json:"nightlyAverageRate"`
-	Invoices           []invoices.Invoice    `json:"invoices"`
+	Invoices           []financials.Invoice    `json:"invoices"`
 	Extras             []Extra               `json:"extras"`
 	BookingAccountName string                `json:"bookingAccountName"`
 	BillingAccountName string                `json:"billingAccountName"`

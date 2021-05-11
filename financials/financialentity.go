@@ -1,14 +1,16 @@
-package invoices
+package financials
 
 type FinancialEntityID struct {
 	Type         FinancialEntityIDType           `json:"type"`
-	ID           int                             `json:"id"`
+	ID           FinancialEntityIDID             `json:"id"`
 	ExternalID   string                          `json:"externalId"`
 	ExportStatus FinancialIdentifierExportStatus `json:"exportStatus"`
 
 	// ExportDate $date-time
 	ExportDate string `json:"exportDate"`
 }
+
+type FinancialEntityIDID int
 
 type FinancialEntityIDType string
 

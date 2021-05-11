@@ -1,6 +1,10 @@
-package invoices
+package financials
 
-import "github.com/JoseFMP/resharmonics/property"
+import (
+	"fmt"
+
+	"github.com/JoseFMP/resharmonics/property"
+)
 
 type Invoice struct {
 	// Number is unique
@@ -23,4 +27,14 @@ type InvoiceDetails struct {
 	CustomerName string            `json:"customerName"`
 	CompanyName  string            `json:"companyName"`
 	Address      *property.Address `json:"address"`
+}
+
+func validateInvoice(inv *Invoice) error {
+	if inv != nil {
+		if int((inv).ID.ID) < 0 {
+			return fmt.Errorf("Invoice ID is invalid")
+		}
+	}
+
+	return nil
 }

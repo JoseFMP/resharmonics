@@ -6,8 +6,7 @@ import (
 	"log"
 
 	"github.com/JoseFMP/resharmonics"
-	"github.com/JoseFMP/resharmonics/bookings"
-	"github.com/JoseFMP/resharmonics/utils"
+	"github.com/JoseFMP/resharmonics/financials"
 )
 
 // main Just do some basic tests without needing to import the library into another Go package
@@ -17,42 +16,18 @@ func main() {
 	creds := getCreds()
 	log.Println("Got creds")
 
-	bookingsClient, errInitializing := bookings.Init(*creds, true)
-	if errInitializing != nil {
-		log.Panicf("Err initializing bookings client\n%v", errInitializing)
+	//bookingsClient, errInitializing := bookings.Init(*creds, true)
+	//if errInitializing != nil {
+	//	log.Panicf("Err initializing bookings client\n%v", errInitializing)
+	//}
+	//smokeTestBookings(bookingsClient)
+
+	finClient, errInitializingFinClient := financials.Init(*creds, true)
+	if errInitializingFinClient != nil {
+		log.Panicf("Err initializing financials client\n%v", errInitializingFinClient)
 	}
 
-	bookingPeriod := utils.BookingPeriod{
-		From: &utils.BookingDate{
-			Year: 2018,
-			Day:  1,
-		},
-		To: &utils.BookingDate{
-			Year: 2021,
-			Day:  20,
-		},
-	}
-
-	log.Println("Getting list...")
-	bookingsList, errGettingList := bookingsClient.List(bookingPeriod, nil, nil, nil)
-
-	if errGettingList != nil {
-		log.Panicf("Error getting the list... agg\n%v", errGettingList)
-	}
-
-	for _, b := range bookingsList {
-		sb, errGettingSingle := bookingsClient.Get(b.Id)
-		if errGettingSingle != nil {
-			log.Panicf("Error getting single booking... agg\n%v", errGettingSingle)
-		}
-		log.Printf("Did %s", string(sb.Identifier))
-
-		//marshalled, errMarhsalling := json.MarshalIndent(singleBooking, "", " ")
-		//if errMarhsalling != nil {
-		//	panic("Err marshalling")
-		//}
-		//log.Printf("singleBooking: %s", string(marshalled))
-	}
+	smokeTestInvoices(finClient)
 }
 
 func getCreds() *resharmonics.Credentials {

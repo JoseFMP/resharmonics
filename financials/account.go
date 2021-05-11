@@ -1,4 +1,4 @@
-package invoices
+package financials
 
 type FinanceAccount struct {
 	Type          FinanceAccountType         `json:"type"`
