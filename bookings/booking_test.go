@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/JoseFMP/resharmonics"
 	"github.com/stretchr/testify/require"
 )
 
@@ -11,8 +12,8 @@ func TestCanonicalReference(t *testing.T) {
 
 	// arrange
 	canonicalMock := "asdfasdfasdf"
-	mock1 := BookingReference(fmt.Sprintf("%s/123", canonicalMock))
-	mock2 := BookingReference(fmt.Sprintf("%s", canonicalMock))
+	mock1 := resharmonics.BookingReference(fmt.Sprintf("%s/123", canonicalMock))
+	mock2 := resharmonics.BookingReference(fmt.Sprintf("%s", canonicalMock))
 
 	// act
 	canonical1 := mock1.AsCanonical()

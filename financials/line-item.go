@@ -1,7 +1,7 @@
-package line
+package financials
 
 import (
-	"github.com/JoseFMP/resharmonics/bookings"
+	"github.com/JoseFMP/resharmonics"
 	"github.com/JoseFMP/resharmonics/product"
 )
 
@@ -26,7 +26,7 @@ type LineItem struct {
 
 	UnitReference string `json:"unitReference"`
 
-	BookingReference bookings.BookingReference `json:"bookingReference"`
+	BookingReference resharmonics.BookingReference `json:"bookingReference"`
 
 	// ChargeFrom $date
 	ChargeFrom string `json:"chargeFrom"`

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/JoseFMP/resharmonics"
 	"github.com/JoseFMP/resharmonics/contact"
 	"github.com/JoseFMP/resharmonics/financials"
 	"github.com/JoseFMP/resharmonics/property"
@@ -127,29 +128,29 @@ func parseListResponse(payload []byte) ([]*BookingData, error) {
 
 // BookingL is just a bit more parsed and less raw than BookingData. Otherwise just the sae
 type BookingL struct {
-	Id        Identifier            `json:"bookingIdentifier"`
-	Reference BookingReference      `json:"bookingReference"`
-	Status    BookingStatus         `json:"status"`
-	Period    utils.BookingPeriod   `json:"period"`
-	Guests    []contact.Details     `json:"guests"`
-	Property  property.PropertyData `json:"property"`
-	Extras    []Extra               `json:"extras"`
+	Id        Identifier                    `json:"bookingIdentifier"`
+	Reference resharmonics.BookingReference `json:"bookingReference"`
+	Status    BookingStatus                 `json:"status"`
+	Period    utils.BookingPeriod           `json:"period"`
+	Guests    []contact.Details             `json:"guests"`
+	Property  property.PropertyData         `json:"property"`
+	Extras    []Extra                       `json:"extras"`
 }
 
 // BookingData is the raw payload format as returned by the Resharmonics API endpoint /bookings
 type BookingData struct {
-	Id                 Identifier            `json:"bookingIdentifier"`
-	Reference          BookingReference      `json:"bookingReference"`
-	Status             BookingStatus         `json:"status"`
-	StartDate          string                `json:"startDate"` // just date as 2005-01-01
-	EndDate            string                `json:"endDate"`   // just date as 2005-01-01
-	Guests             []contact.Details     `json:"guests"`
-	Property           property.PropertyData `json:"property"`
-	NightlyAverageRate float64               `json:"nightlyAverageRate"`
-	Invoices           []financials.Invoice    `json:"invoices"`
-	Extras             []Extra               `json:"extras"`
-	BookingAccountName string                `json:"bookingAccountName"`
-	BillingAccountName string                `json:"billingAccountName"`
+	Id                 Identifier                    `json:"bookingIdentifier"`
+	Reference          resharmonics.BookingReference `json:"bookingReference"`
+	Status             BookingStatus                 `json:"status"`
+	StartDate          string                        `json:"startDate"` // just date as 2005-01-01
+	EndDate            string                        `json:"endDate"`   // just date as 2005-01-01
+	Guests             []contact.Details             `json:"guests"`
+	Property           property.PropertyData         `json:"property"`
+	NightlyAverageRate float64                       `json:"nightlyAverageRate"`
+	Invoices           []financials.Invoice          `json:"invoices"`
+	Extras             []Extra                       `json:"extras"`
+	BookingAccountName string                        `json:"bookingAccountName"`
+	BillingAccountName string                        `json:"billingAccountName"`
 }
 
 func (bookingRaw *BookingData) toBooking() (*BookingL, error) {

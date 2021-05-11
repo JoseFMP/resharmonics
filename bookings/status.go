@@ -38,3 +38,14 @@ const statusSubpath = `status`
 type StatusResponse struct {
 	Status BookingStatus `json:"status"`
 }
+
+func GetAllBookingStatuses() *allBookingStatuses {
+
+	return &allBookingStatuses{
+		Confirmed:  "CONFIRMED",
+		CheckedIn:  "CHECKED_IN",
+		CheckedOut: "CHECKED_OUT",
+		Pending:    "PENDING",
+		Cancelled:  "CANCELLED",
+	}
+}

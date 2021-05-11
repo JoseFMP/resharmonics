@@ -3,6 +3,7 @@ package bookings
 import (
 	"testing"
 
+	"github.com/JoseFMP/resharmonics"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,7 +14,7 @@ func TestCanParse(t *testing.T) {
 	assert.Nil(t, errParsing)
 	assert.NotNil(t, bookings)
 	assert.Len(t, bookings, 1)
-	assert.Equal(t, bookings[0].Reference, BookingReference("20191129-00003/805"))
+	assert.Equal(t, bookings[0].Reference, resharmonics.BookingReference("20191129-00003/805"))
 	assert.Equal(t, bookings[0].Status, GetAllBookingStatuses().CheckedOut)
 	assert.Equal(t, bookings[0].StartDate, "2019-11-29")
 	assert.Equal(t, bookings[0].EndDate, "2020-01-01")

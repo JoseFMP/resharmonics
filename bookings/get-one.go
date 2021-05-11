@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/JoseFMP/resharmonics"
 	"github.com/JoseFMP/resharmonics/contact"
 	"github.com/JoseFMP/resharmonics/financials"
 	"github.com/JoseFMP/resharmonics/property"
@@ -99,21 +100,21 @@ func (raw *RawBookingS) toBooking() (*BookingS, error) {
 }
 
 type RawBookingS struct {
-	Reference       BookingReference     `json:"bookingReference"`
-	Id              Identifier           `json:"bookingIdentifier"`
-	MaxOccupancy    int                  `json:"maxOccupancy"`
-	Guest           contact.Details      `json:"contactDetails"`
-	Period          RawSinglePeriod      `json:"datePeriod"`
-	Extras          []Extra              `json:"extras"`
-	FloorSpace      *string              `json:"floorSpace"`
-	UnitName        *string              `json:"unitName"`
-	UnitType        string               `json:"unitType"`
-	Description     string               `json:"description"`
-	Invoices        []financials.Invoice `json:"invoices"`
-	BuildingAddress property.Address     `json:"buildingAddress"`
-	BuildingName    string               `json:"buildingName"`
-	Features        []property.Feature   `json:"features"`
-	Currency        string               `json:"currencySymbol"`
+	Reference       resharmonics.BookingReference `json:"bookingReference"`
+	Id              Identifier                    `json:"bookingIdentifier"`
+	MaxOccupancy    int                           `json:"maxOccupancy"`
+	Guest           contact.Details               `json:"contactDetails"`
+	Period          RawSinglePeriod               `json:"datePeriod"`
+	Extras          []Extra                       `json:"extras"`
+	FloorSpace      *string                       `json:"floorSpace"`
+	UnitName        *string                       `json:"unitName"`
+	UnitType        string                        `json:"unitType"`
+	Description     string                        `json:"description"`
+	Invoices        []financials.Invoice          `json:"invoices"`
+	BuildingAddress property.Address              `json:"buildingAddress"`
+	BuildingName    string                        `json:"buildingName"`
+	Features        []property.Feature            `json:"features"`
+	Currency        string                        `json:"currencySymbol"`
 }
 
 type RawSinglePeriod struct {
@@ -123,10 +124,10 @@ type RawSinglePeriod struct {
 
 // BookingS is just a bit more parsed and less raw than BookingData. Otherwise just the sae
 type BookingS struct {
-	Reference      BookingReference      `json:"bookingReference"`
-	Identifier     Identifier            `json:"bookingIdentifier"`
-	Period         utils.BookingPeriod   `json:"period"`
-	ContactDetails contact.Details       `json:"contactDetails"`
-	Invoices       []*financials.Invoice `json:"invoices"`
-	Property       property.PropertyData `json:"property"`
+	Reference      resharmonics.BookingReference `json:"bookingReference"`
+	Identifier     Identifier                    `json:"bookingIdentifier"`
+	Period         utils.BookingPeriod           `json:"period"`
+	ContactDetails contact.Details               `json:"contactDetails"`
+	Invoices       []*financials.Invoice         `json:"invoices"`
+	Property       property.PropertyData         `json:"property"`
 }

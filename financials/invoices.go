@@ -7,18 +7,21 @@ import (
 )
 
 type Invoice struct {
+	FinanceAccount *FinanceAccount `json:"financeAccount"`
 	// Number is unique
-	Number         InvoiceNumber      `json:"invoiceNumber"`
-	FinanceAccount *FinanceAccount    `json:"financeAccount"`
-	ID             *FinancialEntityID `json:"id"`
-	TotalNet       float64            `json:"totalNet"`
-	TotalVat       float64            `json:"totalVat"`
-	Currency       Currency           `json:"currencyCode"`
+	Number   InvoiceNumber      `json:"invoiceNumber"`
+	ID       *FinancialEntityID `json:"id"`
+	TotalNet float64            `json:"totalNet"`
+	TotalVat float64            `json:"totalTax"`
+	Currency Currency           `json:"currencyCode"`
 
 	// InvoiceDate $date, no time
 	InvoiceDate string `json:"invoiceDate"`
 
 	InvoiceDueDate string `json:"invoiceDueDate"`
+
+	InvoiceReference string     `json:"invoiceReference,omitempty"`
+	Items            []LineItem `json:"lineItems"`
 }
 
 type InvoiceNumber string

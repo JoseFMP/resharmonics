@@ -4,6 +4,8 @@ type FinanceAccount struct {
 	Type          FinanceAccountType         `json:"type"`
 	AccountNumber string                     `json:"accountNumber"`
 	ID            *FinancialEntityIdentifier `json:"id"`
+	Email         string                     `json:"emailAddress"`
+	AccountName   string                     `json:"accountName"`
 }
 
 type FinancialEntityIdentifier struct {
