@@ -33,7 +33,7 @@ func (clt *financialsClient) ListInvoices(period utils.BookingPeriod, org reshar
 		if inv == nil {
 			continue
 		}
-		errValidating := validateInvoice(inv)
+		errValidating := inv.Validate()
 		if errValidating != nil {
 			log.Printf("Skipping invoice: %v", errValidating)
 			continue

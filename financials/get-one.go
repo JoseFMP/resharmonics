@@ -24,9 +24,11 @@ func (clt *financialsClient) GetInvoice(invoiceID FinancialEntityIDID) (*Invoice
 		return nil, errParsing
 	}
 
-	errValidating := validateInvoice(invoice)
-	if errValidating != nil {
-		return nil, errValidating
+	if invoice != nil {
+		errValidating := invoice.Validate()
+		if errValidating != nil {
+			return nil, errValidating
+		}
 	}
 	return invoice, nil
 }

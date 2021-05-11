@@ -29,12 +29,16 @@ type InvoiceDetails struct {
 	Address      *property.Address `json:"address"`
 }
 
-func validateInvoice(inv *Invoice) error {
-	if inv != nil {
-		if int((inv).ID.ID) < 0 {
-			return fmt.Errorf("Invoice ID is invalid")
-		}
+func (inv *Invoice) Validate() error {
+	if inv.ID == nil {
+		return fmt.Errorf("No ID in this invoice")
 	}
-
+	if int((inv).ID.ID) < 0 {
+		return fmt.Errorf("Invoice ID is invalid")
+	}
 	return nil
+}
+
+func (inv *Invoice) ExtractID() FinancialEntityIDID {
+	return inv.ID.ID
 }
