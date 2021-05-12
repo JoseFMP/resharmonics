@@ -13,6 +13,7 @@ type allBookingStatuses struct {
 	CheckedOut BookingStatus
 	Pending    BookingStatus
 	Cancelled  BookingStatus
+	Enquiry    BookingStatus
 }
 
 func (clt *bookingsClient) GetStatus(id Identifier) (BookingStatus, error) {
@@ -47,5 +48,6 @@ func GetAllBookingStatuses() *allBookingStatuses {
 		CheckedOut: "CHECKED_OUT",
 		Pending:    "PENDING",
 		Cancelled:  "CANCELLED",
+		Enquiry:    "ENQUIRY",
 	}
 }
