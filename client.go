@@ -2,13 +2,16 @@ package resharmonics
 
 import (
 	"fmt"
-	"sync"
+	"log"
 	"time"
+
+	"github.com/JoseFMP/resharmonics/auth"
 )
 
 type client struct {
 	credentials    Credentials
-	tokenLock      *sync.Mutex
+	reqTokenChan   chan *auth.AuthTask
+	tokensChan     chan string
 	token          string
 	tokenFetchedOn *time.Time
 }
@@ -29,14 +32,20 @@ func Init(cred Credentials, preAuthorize bool) (Client, error) {
 	}
 
 	clientResult := &client{
-		credentials: cred,
-		tokenLock:   &sync.Mutex{},
+		credentials:  cred,
+		reqTokenChan: make(chan *auth.AuthTask),
+		tokensChan:   make(chan string),
 	}
+	go auth.Auth(clientResult.reqTokenChan, cred.Username, cred.Password, clientResult.tokensChan)
+
 	if preAuthorize {
-		authRes := clientResult.auth("")
-		if authRes != nil {
-			return nil, authRes
+		clientResult.reqTokenChan <- &auth.AuthTask{}
+		token := <-clientResult.tokensChan
+		if token == "" {
+			return nil, fmt.Errorf("Could not secure initial token")
 		}
+		clientResult.token = token
+		log.Printf("Got initial token.")
 	}
 	return clientResult, nil
 }

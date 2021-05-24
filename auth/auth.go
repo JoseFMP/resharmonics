@@ -12,7 +12,7 @@ import (
 
 const authEndpointSubpat = `auth`
 
-func FetchToken(userName string, password string) (string, error) {
+func fetchToken(userName string, password string) (string, error) {
 
 	params := map[string]string{
 		"username": userName,

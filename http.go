@@ -7,20 +7,24 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/JoseFMP/resharmonics/auth"
 	"github.com/JoseFMP/resharmonics/urls"
 	"github.com/JoseFMP/resharmonics/utils"
 )
 
 var baseUrl = urls.GetBaseUrl()
 
+func (clt *client) ensureTokenNotEmpty() {
+	if clt.token == "" {
+		clt.reqTokenChan <- &auth.AuthTask{}
+		newToken := <-clt.tokensChan
+		clt.token = newToken
+	}
+}
+
 func (clt *client) DoGet(subPath string, params map[string]interface{}) ([]byte, error) {
 
-	if clt.token == "" {
-		errAuthing := clt.auth("")
-		if errAuthing != nil {
-			return nil, errAuthing
-		}
-	}
+	clt.ensureTokenNotEmpty()
 	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
 
 	req, errCreatingReq := utils.CreateGetReq(endpoint, params, clt.token)
@@ -59,14 +63,13 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 		log.Println("[doReq] Needs to authenticate...")
 
 		usedToken := getUsedToken(req.Header)
-		errAuthenticating := clt.auth(usedToken)
-		if errAuthenticating != nil {
-			return nil, errAuthenticating
-		} else {
+		clt.reqTokenChan <- &auth.AuthTask{WrongToken: usedToken}
+		newToken := <-clt.tokensChan
+		clt.token = newToken
 
-			injectToken(clt.token, req.Header)
-			log.Println("Authentication returned no error, should have new token")
-		}
+		injectToken(clt.token, req.Header)
+		log.Println("Authentication returned no error, should have new token")
+
 	}
 
 	respPayload, errReadingBody := ioutil.ReadAll(res.Body)
@@ -79,12 +82,7 @@ func (clt *client) doReq(req *http.Request) ([]byte, error) {
 
 func (clt *client) DoPost(subPath string, params map[string]string) ([]byte, error) {
 
-	if clt.token == "" {
-		errAuthing := clt.auth("")
-		if errAuthing != nil {
-			return nil, errAuthing
-		}
-	}
+	clt.ensureTokenNotEmpty()
 	endpoint := fmt.Sprintf("%s/%s", baseUrl, subPath)
 
 	req, errCreatingReq := utils.CreatePostReq(endpoint, params, clt.token)
